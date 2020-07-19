@@ -1,0 +1,860 @@
+{% load static %}
+{% load templatetags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="icon" href="{% static 'images/instag.png' %}" type="image/png">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.css' %}">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.structure.css' %}">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.13.0-web/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/emojionearea.min.css' %}">
+    
+    <style>
+        
+        .pe{
+            cursor: pointer;
+        }
+        .fit{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        @media only screen and (min-width:992px){
+            #btn{
+                padding-right: 80px;
+            }
+        }
+        @media only screen and (min-width:400px){
+            .pf{
+                padding-top: 40px;
+            }
+        }
+        @media only screen and (max-width:400px){
+            .pf{
+                padding-top: 20px;
+            }
+        }
+        @media only screen and (max-width:575px){
+            #user{
+                overflow:hidden !important;
+                text-overflow:ellipsis;
+            }
+            #main{
+                margin-top: 60px;
+            }
+            #myposts{
+                padding: 2px;
+            }
+            
+        }
+        @media only screen and (min-width:576px){
+        
+            #myposts{
+                padding:15px;
+            }
+            
+        }
+        
+        #dp{
+            border: 1px solid black;
+        }
+        
+        
+
+        
+    </style>
+</head>
+<body style="background-color: #eee;">
+<!-- Navbar -->
+    <nav class="navbar fixed-top mainnav" style="background-color: white;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#" style="font-family:cursive;font-weight:bold;color:black;">Instag</a>
+            </div>
+            <form autocomplete="off" class="navbar-form navbar-left frm" action="{% url 'search' %}">
+                <div class="input-group">
+                    <input type="search" class="form-control fas fa-search search" placeholder="&#xf002; Search" style="background-color: whitesmoke;" name="profile" id="search" data-url="{% url 'suggestions' %}">
+                </div>
+                <div id="icon">
+                    <div type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search fa-2x nb"></i></div>
+                </div>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="cil:home" data-inline="false" data-height="35px"></span></a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false" data-height="40px"></span></div></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'profile' %}"><i class="fas fa-user-circle fa-2x nb"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+    <nav class="navbar fixed-top tempnav" style="background-color: white;display:none;">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-4">
+                    <i class="fas fa-arrow-left fa-2x" id="navbtn" type=button></i>
+                </div>
+                <div class="col-8">
+                    <h3>Photo</h3>
+                </div>
+            </div>
+        </div>
+    </nav>
+<!-- Profile -->
+    <div class="container myprofile">
+        <div class="row justify-content-center" style="padding-top: 60px;">
+            {% if user == pf.user %}
+            <div class="col-4 col-md-3 col-lg-2">
+                <form action="{% url 'dp' %}" method="POST" id="dpform" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="setdp">
+                        <img src="{{ pf.dp.url }}" alt="Dp" id="dp" class="img-fluid" style="cursor: pointer;border-radius:50%;">
+                    </label>
+                    <input type="file" id="setdp" style="display: none;" name="mydp">
+                </form>
+            </div>
+            {% else %}
+            <div class="col-4 col-md-3 col-lg-2">
+                <img src="{{ pf.dp.url }}" alt="Dp" id="dp" class="img-fluid" style="cursor: pointer;">
+            </div>
+            {% endif %}
+            <div class="col-6 col-sm-4 col-md-3 col-xl-2 pf">
+                <h4 id="user"><strong>{{ pf.user }}</strong></h4>
+            </div>
+            {% if user == pf.user %}
+            <div class="col-2">
+                <i class="fas fa-2x fa-cog pf" type="button" data-toggle="modal" data-target="#sgmd"></i>
+            </div>
+            {% else %}
+            <div class="col-2" style="visibility: hidden;">
+                <i class="fas fa-2x fa-cog pf" type="button" data-toggle="modal" data-target="#sgmd"></i>
+            </div>
+            {% endif %}
+        </div>
+        {% if pf.bio %}
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
+                <h4><p>{{ pf.bio|linebreaks }}</p></h4>
+            </div>
+        </div>
+        {% else %}
+        <div class="row justify-content-center" style="visibility: hidden;">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
+                <h4><p>{{ pf.bio|linebreaks }}</p></h4>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row justify-content-center">
+            <div class="col-3 col-sm-2 p">
+                <div><strong id="ps" style="padding-left: 0.8rem;">{{ posts|length }}</strong>
+                <h6>post{{ posts|pluralize }}</h6></div>
+            </div>
+            <div class="col-3 col-sm-2 p">
+                <div type="button" data-toggle="modal" data-target="#fwmd"><strong class="pe" id="fs" style="padding-left: 1.7rem;">{{ fs|length }}</strong>
+                <h6 class="pe" id="cg">follower{{ fs|pluralize }}</h6></div>
+            </div>
+            <div class="col-3 col-sm-2 p">
+                <div type="button" data-toggle="modal" data-target="#fgmd"><strong class="pe" id="fg" style="padding-left: 1.7rem;">{{ fg|length }}</strong>
+                <h6 class="pe">following</h6></div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-11 col-sm-7 col-md-6 col-lg-6" id="btn">
+                <button class="btn btn-block btn-info" id="btnf">{{btn}}</button>
+            </div>
+        </div>
+        
+        <br><br><br><br>
+        <div class="row">
+            <div class="col-9 col-sm-6">
+                <h4>{{pf.full_name}}</h4>
+            </div>
+        </div>
+        <hr>
+        <div class="row justify-content-center">
+            <h3 style="padding-bottom: 0.7%;">Posts</h3>
+        </div>
+    
+    </div>
+<!-- My Posts -->
+    <div class="container myprofile" style="background-color: white;min-height:45vh;position:relative;">
+        {% if posts %}
+            <div class="row">
+                {% for post in posts %}
+                <div class="col-4 col-lg-3" id="myposts">
+                    <img src="{{ post.img.url }}" alt="post" name="{{ post.id }}" class="img-fluid fit viewpost" style="cursor: pointer;">
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <h1 id="noposts">
+                No posts yet !
+            </h1>
+        {% endif %}
+    </div>
+  
+
+<!-- Modals -->
+
+<!-- Followers Modal -->
+    <div class="modal fade" id="fwmd" tabindex="-1" role="dialog" aria-labelledby="fwmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="fwmd">Followers</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    {% for follower in fs %}
+                    <div id="{{ follower.id }}">
+                        <img src="{{ follower.dp.url }}" alt="Dp" class="img-fluid" style="cursor: pointer;max-width:25px;border-radius:50%;">
+                        <h4 style="display: inline;padding-left:5px;">{{ follower.user }}</h4>
+                        <h6 style="color: grey;padding-left:42px">{{ follower.full_name }}</h6><hr>
+                    </div>
+                    {% endfor %}
+                    {% if self not in fs %}
+                    <div style="display: none;" id="self" name='self'>
+                        <img src="{{ self.dp.url }}" alt="Dp" class="img-fluid" style="cursor: pointer;max-width:30px;border-radius:50%;">
+                        <h4 style="display: inline;padding-left:5px;">{{ self.user }}</h4>
+                        <h6 style="color: grey;padding-left:42px">{{ self.full_name }}</h6><hr>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Following Modal -->
+    <div class="modal fade" id="fgmd" tabindex="-1" role="dialog" aria-labelledby="fwmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="fgmd">Following</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    {% for following in fg %}
+                    <img src="{{ following.dp.url }}" alt="Dp" class="img-fluid" style="cursor: pointer;max-width:30px;border-radius:50%;">
+                    <h4 style="display: inline;padding-left:5px;">{{ following.user }}</h4>
+                    <h6 style="color: grey;padding-left:42px">{{ following.full_name }}</h6><hr>
+                    {% endfor %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Search Modal -->
+    <div class="modal fade" id="shmd" tabindex="-1" role="dialog" aria-labelledby="shmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shmd">Search</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="justify-content: space-between;">
+                    <form autocomplete="off" action="{% url 'search' %}" class="frm">
+                        <div class="input-group">
+                            <input type="search" class="form-control fas fa-search search" placeholder="&#xf002; Search" style="background-color: whitesmoke;" name="profile">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Settings Modal -->
+    <div class="modal" id="sgmd" tabindex="-1" role="dialog" aria-labelledby="sgmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body" style="cursor: pointer;display:grid;justify-content:center;">
+                    <div style="justify-self: center;" type="button" data-toggle="modal" data-target="#cpmd" data-dismiss="modal">Change Password</div><div><hr style="border-color:grey;"></div>
+                    <div id="logout" style="justify-self: center;">Log Out</div><div><hr style="border-color:grey;"></div>
+                    <div data-dismiss="modal" style="justify-self: center;">Cancel</div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Change password Modal -->
+    <div class="modal fade" id="cpmd" tabindex="-1" role="dialog" aria-labelledby="cpmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="cpmd">Change Password</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-borderless">
+                        <tr><td>Old Password</td><td><input type="password" name="oldpass" class="cp" required></td></tr>
+                        <tr><td>New Password</td><td><input type="password" name="newpass" class="cp" required></td></tr>
+                        <tr><td>Confirm New Password</td><td><input type="password" name="confirm" class="cp" required></td></tr>
+                    </table>
+                    <div id="cpalert"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="cpbtn">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Edit Profile Modal -->
+    <div class="modal fade" id="epmd" tabindex="-1" role="dialog" aria-labelledby="epmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="epmd">Edit Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+            <form action="{% url 'editprofile' %}" method="POST">
+                {% csrf_token %}
+                    <table class="table table-borderless">
+                        <tr><td>Username</td><td><input type="text" name='username' value="{{ pf.user }}"></td></tr>
+                        <tr><td>Name</td><td><input type="text" name='fullname' value="{{ pf.full_name }}"></td></tr>
+                        <tr><td>Bio</td><td><div class="txt"><textarea name='bio' class="emoji">{{ pf.bio }}</textarea></div></td></tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+<!-- Post Modal -->
+    <div class="modal fade" id="postmd" tabindex="-1" role="dialog" aria-labelledby="postmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="postmd">Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+            <form action="{% url 'newpost' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                        <table class="table table-borderless">
+                            <tr><td>Image</td><td><input type="file" accept="image/*" name="mypost" required></td></tr>
+                            <tr><td>Caption</td><td><div class="txt"><textarea name="caption" class="emoji"></textarea></div></td></tr>
+                        </table>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="main" style="display: none;">
+        <!-- Post -->
+            {% for post,reaction in di.items %}
+            <div class="container postcontainer">
+                <div id="c_{{ post.id }}" style="display: none;">
+                <!-- Post Header -->
+                    <div class="row">
+                        <div class="col-2 col-lg-1">
+                            <img class="img-fluid profile" src="{{ post.author.dp.url }}" alt="Dp" style="border-radius: 50%;max-height:30px;max-width:30px;" data-url="{% url 'authorprofile' post.author %}">
+                        </div>
+                        <div col-9 col-lg-10">
+                            <h4 class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</h4>
+                        </div>
+                        <div class="col-1 ml-auto" style="padding-right: 25px;">
+                            {% if user == pf.user %}
+                                <span class="iconify" id="horizontal" data-icon="uil:ellipsis-h" data-inline="false" data-height="25px" type="button" data-toggle="modal" data-target="#menu_{{post.id}}"></span>
+                                <span class="iconify" id="vertical" data-icon="uil:ellipsis-v" data-inline="false" data-height="25px" type="button" data-toggle="modal" data-target="#menu_{{post.id}}"></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                <!-- Post Body -->
+                    <div class="row">
+                        <div class="col-12" style="padding-left:0;padding-right:0;">
+                            <img src="{{ post.img.url }}" alt="post" class="img-fluid dbc imagefit" name="{{ post.id }}" style="cursor: pointer;">
+                            <i class="fas fa-heart fa-10x" id="icon_{{ post.id }}" style="display: none;"></i>
+                        </div>
+                    </div>
+                <!-- Post Footer -->
+                    <div class="row" style="padding-top: 10px;">
+                        <div class="col-2 col-sm-1">
+                            {% if user == us %}
+                                {% if pf in reaction.likes %}
+                                    <i class="fas fa-heart fa-2x like" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
+                                {% else %}
+                                    <i class="far fa-heart fa-2x like" id="{{ post.id }}" style="cursor: pointer;"></i>
+                                {% endif %}
+                            {% else %}
+                                {% if self in reaction.likes %}
+                                    <i class="fas fa-heart fa-2x like" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
+                                {% else %}
+                                    <i class="far fa-heart fa-2x like" id="{{ post.id }}" style="cursor: pointer;"></i>
+                                {% endif %}
+                            {% endif %}
+                            
+
+                        </div>
+                        <div class="col-2 col-sm-1">
+                            <i class="far fa-comment fa-flip-horizontal fa-2x comment" style="cursor: pointer;" data-toggle="modal" data-target="#cmt_{{post.id}}"></i>
+                        </div>
+                    </div>
+                    {% if reaction.likes|length > 0 %}
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-12">
+                            <h5 class="{{ post.id }}" type="button" data-toggle="modal" data-target="#lkmd_{{ post.id }}">{{ reaction.likes|length }} like{{ reaction.likes|pluralize }}</h5>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="row" style="display: none;margin-top: 10px;" id="containerl_{{ post.id }}">
+                        <div class="col-12">
+                            <h5 id="templ_{{ post.id }}" type="button" data-toggle="modal" data-target="#lkmd_{{ post.id }}">{{ reaction.likes|length }} like{{ reaction.likes|pluralize }}</h5>
+                        </div>
+                    </div>
+                    {% if post.caption %}
+                    <div class="row" style="margin-top: 10px;">
+                        <div col-12" style="padding-left: 15px;">
+                            <p><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> {{ post.caption }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if reaction.comments|length > 0 %}
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 style="color: grey;" id="nc_{{ post.id }}" type="button" data-toggle="modal" data-target="#cmtmd_{{ post.id }}">{{ reaction.comments|length }} comment{{ reaction.comments|pluralize }}</h5>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="row" style="display: none;" id="containerc_{{ post.id }}">
+                        <div class="col-12">
+                            <h5 style="color: grey;" id="tempc_{{ post.id }}" type="button" data-toggle="modal" data-target="#cmtmd_{{ post.id }}">{{ reaction.comments|length }} comment{{ reaction.comments|pluralize }}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-9" style="padding-left:15px;padding-top: 10px;">
+                            <input type="text" id="id_{{ post.id }}" placeholder="Add a comment here..." class="commentemoji">
+                        </div>
+                        <div class="col-3" style="padding-top: 13px;">
+                            <span class="comment" name="{{ post.id }}" type="button">Post</span>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row time">
+                        <div class="col-12">
+                            <h6 style="color:grey;">{{ post.post_date|timesince|split:"," }} ago</h6>
+                        </div>
+                    </div>
+                </div>
+    
+        <!-- Modals -->
+            <!-- Like Modal -->
+                <div class="modal fade" id="lkmd_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="lkmdLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="lkmd">Likes</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                {% for like in reaction.likes %}
+                                <div id="{{ post.id }}_{{ like.id }}">
+                                    <img src="{{ like.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' like.user %}">
+                                    <h4 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' like.user %}">{{ like.user }}</h4>
+                                    <h6 style="color: grey;padding-left:42px">{{ like.full_name }}</h6><hr>
+                                </div>
+                                {% endfor %}
+                                {% if pf not in reaction.likes %}
+                                <div style="display: none;" id="self_{{ post.id }}" name="self_{{ post.id }}">
+                                    <img src="{{ pf.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' pf.user %}">
+                                    <h4 class="profile" style="display: inline;padding-left:5px;" data-url="{% url 'authorprofile' pf.user %}">{{ pf.user }}</h4>
+                                    <h6 style="color: grey;padding-left:42px">{{ pf.full_name }}</h6><hr>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- View Comment Modal -->
+                <div class="modal fade" id="cmtmd_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="cmtmdLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="cmtmd">Comments</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body cmt_{{ post.id }}">
+                                {% for comment in reaction.comments %}
+                                <div>
+                                    <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
+                                    <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
+                                    <span>{{ comment.comments }}</span>
+                                    {% if comment.commentby.user == user %}
+                                        <i class="fas fa-trash-alt delcmt" type="button" data-url="{% url 'deletecomment' comment.id %}"></i>
+                                    {% endif %}
+                                    <hr>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Post Comment Modal-->
+                <div class="modal fade" id="cmt_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="cmtLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <p style="padding-top: 10px;"><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> {{ post.caption }}</p>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body cmt_{{ post.id }}">
+                                {% for comment in reaction.comments %}
+                                <div>
+                                    <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
+                                    <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
+                                    <span>{{ comment.comments }}</span>
+                                    {% if comment.commentby.user == user %}
+                                        <i class="fas fa-trash-alt delcmt" type="button" data-url="{% url 'deletecomment' comment.id %}"></i>
+                                    {% endif %}
+                                    <hr>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <div class="pc"><input type="text" placeholder="Add a comment here..." class="commentemoji id_{{ post.id }}"></div>
+                                <span class="commentmd" name="{{ post.id }}" type="button">Post</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Menu Modal-->
+                <div class="modal" id="menu_{{post.id}}" tabindex="-1" role="dialog" aria-labelledby="menu_{{ post.id }}Label" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body" style="cursor: pointer;display:grid;justify-content:center;">
+                                <div style="justify-self: center;" type="button" data-toggle="modal" data-target="#edit_{{ post.id }}" data-dismiss="modal">Edit</div><div><hr style="border-color:grey;"></div>
+                                <div name="{{ post.id }}" class="deletepost" style="justify-self: center;" type="button">Delete</div><div><hr style="border-color:grey;"></div>
+                                <div data-dismiss="modal" style="justify-self: center;">Cancel</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Edit Post Modal -->
+                <div class="modal fade" id="edit_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="editpostmdLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="edit_{{ post.id }}">Edit Post</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                        <form action="{% url 'editpost' post.id %}">
+                                    <table class="table table-borderless">
+                                        <tr><td>Caption</td><td><div class="txt"><textarea class="emoji" name="caption">{{ post.caption }}</textarea></div></td></tr>
+                                    </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+    
+    <script src = "{% static 'js/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery-ui/jquery-ui.js' %}"></script>
+    <script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/emojionearea.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        $(function(){
+            
+            $('.deletepost').click(function(){
+                id = $(this).attr('name')
+                window.location = "{% url 'deletepost' id=0 %}".replace(/0/,id)
+                
+            })
+            $('#setdp').change(function(){
+                $('#dpform').submit()
+            })
+            $('#cpbtn').click(function(event){
+                if($.trim($('.cp').val()) != ''){
+                    if($('input[name=newpass]').val() == $('input[name=confirm]').val()){
+                        var fields = {
+                            'oldpass' : $('input[name=oldpass]').val(),
+                            'newpass' : $('input[name=newpass]').val(),
+                            csrfmiddlewaretoken : '{{ csrf_token }}'
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            url: "{% url 'changepass' %}",
+                            dataType: 'json',
+                            data: fields,
+                            success: function(data){
+                                $('.cp').val('')
+                                $('#cpalert').empty()
+                                if(data.message == 'Password changed successfully'){
+                                    $('#cpalert').html("<div class='alert "+data.msgclass+"'>"+data.message+"<div>")
+                                    setTimeout(function(){
+                                        window.location = "{% url 'profile' %}"
+                                    },2000)
+                                    
+                                }else{
+                                $('#cpalert').html("<div class='alert "+data.msgclass+"'>"+data.message+"<div>")
+                                }
+                            }
+                        })
+                    }
+                    else{
+                        $('.cp').val('')
+                        $('#cpalert').empty()
+                        $('#cpalert').html("<div class='alert alert-danger'>Passwords does not match</div>")
+                    }
+                }
+                else{
+                    $('.cp').val('')
+                    $('#cpalert').empty()
+                    $('#cpalert').html("<div class='alert alert-danger'>Password cannot be blank</div>")
+                }
+            })
+            $('#logout').click(function(){
+                window.location = "{% url 'logout' %}"
+            })
+            $('#btnf').click(function(){
+                var btn = $(this).text()
+                if(btn == 'Edit Profile'){
+                    $('#epmd').modal('show')
+                }else{
+                    $.ajax({
+                        url: "{% url 'followupdate' %}",
+                        dataType: 'json',
+                        data: {
+                            'action' : btn,
+                            'to' : $('#user').text()
+                        },
+                        success: function(data){
+                            $('#btnf').text(data.button)
+                            if($('#self').attr('name')){
+                                if(data.button == 'Following'){
+                                    $('#self').show()
+                                }else{
+                                    $('#self').hide()
+                                }
+                            }else{
+                                if(data.button == 'Following'){
+                                    $('#'+data.by).show()
+                                }else{
+                                    $('#'+data.by).hide()
+                                }
+                            }
+                            if(data.followers == 1){
+                                $('#cg').text('follower')
+                            }else{
+                                $('#cg').text('followers')
+                            }
+                            $('#fs').text(data.followers)
+                            
+                        }
+                    })
+                }
+            })
+            $('.viewpost').click(function(){
+                id = $(this).attr('name')
+                $('.myprofile').hide()
+                $('.mainnav').hide()
+                $('.tempnav').show()
+                $('#main').show()
+                $('#c_'+id).show()
+
+            })
+            $('#navbtn').click(function(){
+                $('.tempnav').hide()
+                $('#main').hide()
+                $('#c_'+id).hide()
+                $('.mainnav').show()
+                $('.myprofile').show()
+            })
+            $('.like').click(function(){
+                var id = $(this).attr('id')
+                if($(this).css('color') != 'rgb(255, 0, 0)'){
+                    $.ajax({
+                        url: "{% url 'updatelikes' %}",
+                        data: {
+                            'post' : id,
+                            'action' : 'liked'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#'+id).css('color','rgb(255, 0, 0)').removeClass("far fa-heart").addClass("fas fa-heart")
+                            if(data.likes > 1){
+                                $('.'+id).show().text(data.likes+' likes')
+                            }else{
+                                $('#containerl_'+id).show()
+                                $('#templ_'+id).text(data.likes+' like')
+                            }
+                            if($('#self_'+id).attr('name') == 'self_'+id){
+                                $('#self_'+id).show()
+                            }else{
+                                $('#'+id+'_'+data.pf).show()
+                            }
+                        }
+                    })
+
+                }else{
+                    $.ajax({
+                        url: "{% url 'updatelikes' %}",
+                        data: {
+                            'post' : id,
+                            'action' : 'disliked'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#'+id).css('color','rgb(33, 37, 41)').removeClass("fas fa-heart").addClass("far fa-heart")
+                            if(data.likes == 0){
+                                $('.'+id).hide()
+                                $('#containerl_'+id).hide()
+                                
+                            }else if(data.likes == 1){
+                                $('.'+id).show().text(data.likes+' like')
+                            }else{
+                                $('.'+id).show().text(data.likes+' likes')
+                            }
+                            if($('#self_'+id).attr('name') == 'self_'+id){
+                                $('#self_'+id).hide()
+                            }else{
+                                $('#'+id+'_'+data.pf).hide()
+                            }
+                            
+                        }
+                    })
+                    
+                }
+            })
+            $('.dbc').dblclick(function(){
+                var id = $(this).attr('name')
+                if($('#'+id).css('color') != 'rgb(255, 0, 0)'){
+                    $.ajax({
+                        url: "{% url 'updatelikes' %}",
+                        data: {
+                            'post' : id,
+                            'action' : 'liked'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#'+id).css('color','rgb(255, 0, 0)').removeClass("far fa-heart").addClass("fas fa-heart")
+                            if(data.likes > 1){
+                                $('.'+id).show().text(data.likes+' likes')
+                            }else{
+                                $('#containerl_'+id).show()
+                                $('#templ_'+id).text(data.likes+' like')
+                            }
+                            if($('#self_'+id).attr('name') == 'self_'+id){
+                                $('#self_'+id).show()
+                            }else{
+                                $('#'+id+'_'+data.pf).show()
+                            }
+                        }
+                    })
+                }
+            })
+            $('.comment').click(function(){
+                var id = $(this).attr('name')
+                var value = $('#id_'+id).val()
+                if($.trim(value) != ''){
+                    $.ajax({
+                        url: "{% url 'comments' %}",
+                        data: {
+                            'id' : id,
+                            'comment' : value
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            var url = "{% url 'deletecomment' comment=0 %}".replace(/0/,data.id)
+                            if(data.comments == 0){
+                                $('#nc_'+id).hide()
+                                $('#containerc_'+id).hide()
+                                
+                            }else if(data.comments == 1){
+                                $('#containerc_'+id).show()
+                                $('#tempc_'+id).text(data.comments+' comment')
+                                
+                            }else{
+                                $('#nc_'+id).show().text(data.comments+' comments')
+                                
+                            }
+                            $('#id_'+id).val('')
+                            $("<div class='row'><div class='col-12' style='padding-left:20px;'><strong>{{ user }} </strong>"+value+"</div></div><br>").insertBefore('div.time')
+                            $('.cmt_'+id).prepend("<img src='{{ self.dp.url }}' alt='Dp' class='img-fluid' style='cursor: pointer;max-width:25px;border-radius:50%;'><h5 style='padding-left:5px;display:inline;'>{{ user }} </h5><span>"+value+"</span><i class='fas fa-trash-alt delcmt' type='button' data-url="+url+"></i><hr>")
+                        }
+                    })
+                }
+
+                
+            })
+            $('.commentmd').click(function(){
+                var id = $(this).attr('name')
+                var value = $('.id_'+id).val()
+                if($.trim(value) != ''){
+                    $.ajax({
+                        url: "{% url 'comments' %}",
+                        data: {
+                            'id' : id,
+                            'comment' : value
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            var url = "{% url 'deletecomment' comment=0 %}".replace(/0/,data.id)
+                            if(data.comments == 0){
+                                $('#nc_'+id).hide()
+                                $('#containerc_'+id).hide()
+                                
+                            }else if(data.comments == 1){
+                                $('#containerc_'+id).show()
+                                $('#tempc_'+id).text(data.comments+' comment')
+                                
+                            }else{
+                                $('#nc_'+id).show().text(data.comments+' comments')
+                                
+                            }
+                            $('.id_'+id).val('')
+                            $("<div class='row'><div class='col-12' style='padding-left:20px;'><strong>{{ user }} </strong>"+value+"</div></div><br>").insertBefore('div.time')
+                            $('.cmt_'+id).prepend("<img src='{{ self.dp.url }}' alt='Dp' class='img-fluid' style='cursor: pointer;max-width:25px;border-radius:50%;'><h5 style='padding-left:5px;display:inline;'>{{ user }} </h5><span>"+value+"</span><i class='fas fa-trash-alt delcmt' type='button' data-url="+url+"></i><hr>")
+                        }
+                    })
+                }
+
+                
+            })
+            
+        })
+
+    </script>
+</body>
+</html>

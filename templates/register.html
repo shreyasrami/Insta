@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up • Instag</title>
+    <link rel="icon" href="{% static 'images/instag.png' %}" type="image/png">
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.css' %}">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.structure.css' %}">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.13.0-web/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .form-container{
+            background-color: white;
+            min-height:450px;
+            min-width:280px;
+            padding:20px;
+            border: solid 2px #e6e6e6;
+          }
+          body{
+            background-color: #eee;
+          }
+          .footer{
+            min-height:70px;
+            min-width:280px;
+            background-color: white;
+            border: solid 2px #e6e6e6;
+            text-align: center;
+            padding-top: 2.5vh;
+          }
+          .btn{
+            margin-top: 10vh;
+          }
+          .main{
+              padding-top: 5vh;
+          }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-6 col-md-3 main">
+                <form class = "form-container" action="{% url 'register' %}" method="POST">
+                    {% csrf_token %}
+                    <div style="display: grid;justify-content:center;padding-bottom:25px;">
+                        <h3 style="font-family:cursive;font-weight:bold;">Instag</h3>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control c" id="Full" name="Full_Name" placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control c" id="Username" name="Username" placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control c" id="Email" name="Email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control c" id="Password1" name="Password1" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control c" id="Password2" name="Password2" placeholder="Confirm Password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="rg" disabled>Register</button><br>
+                    
+                    <div class="alert {{message_class}}">{{message}}</div>
+                  </form>
+                  
+  
+            </div>
+        </div>
+        <div class="row justify-content-center" style="padding-top: 5vh;">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="footer">
+                    <p>Have an account? <a href="{% url 'login' %}">Log in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script src = "{% static 'js/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery-ui/jquery-ui.js' %}"></script>
+    <script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        $(function(){
+            $('#rg').css('cursor','default')
+            var f = $('#Full')
+            var u = $('#Username')
+            var e = $('#Email')
+            var p = $('#Password1')
+            var cp = $('#Password2')
+            
+            $('.c').keyup(function(){
+                if($.trim(f.val()) != '' && $.trim(u.val()) != '' && $.trim(e.val()) != ''){
+                    if($.trim(p.val()).length >= 6 && $.trim(cp.val()).length >= 6){
+                        $('#rg').prop('disabled',false)
+                        $('#rg').css('cursor','pointer')
+                    }else{
+                        $('#rg').prop('disabled',true)
+                        $('#rg').css('cursor','default')
+                    }
+                }else{
+                    $('#rg').prop('disabled',true)
+                    $('#rg').css('cursor','default')
+                }
+            })
+        })
+        
+    </script>
+    
+</body>
+</html>

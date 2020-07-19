@@ -1,0 +1,458 @@
+{% load static %}
+{% load templatetags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instag</title>
+    <link rel="icon" href="{% static 'images/instag.png' %}" type="image/png">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.css' %}">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.structure.css' %}">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.13.0-web/css/all.css' %}">
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/emojionearea.min.css' %}">
+    
+    
+</head>
+<body style="background-color: #eee;">
+<!-- Navbar -->
+    <nav class="navbar fixed-top" style="background-color: white;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#" style="font-family:cursive;font-weight:bold;color:black;">Instag</a>
+            </div>
+            <form autocomplete="off" class="navbar-form navbar-left frm" action="{% url 'search' %}">
+                <div class="input-group">
+                    <input type="search" class="form-control fas fa-search search" placeholder="&#xf002; Search" style="background-color: whitesmoke;" name="profile" id="search" data-url="{% url 'suggestions' %}">
+                </div>
+                <div id="icon">
+                    <a href="#" type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search fa-2x nb"></i></a>
+                </div>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="el:home" data-inline="false" data-height="33px"></span></a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false" data-height="40px"></span></div></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'profile' %}"><i class="far fa-user-circle fa-2x nb"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+    <hr>
+    
+    <div id="main">
+        {% if di.items %}
+        <!-- Post -->
+            {% for post,reaction in di.items %}
+            <div class="container postcontainer">
+                <div id="c_{{ post.id }}">
+                <!-- Post Header -->
+                    <div class="row">
+                        <div class="col-2 col-lg-1">
+                            <img class="img-fluid profile" src="{{ post.author.dp.url }}" alt="Dp" style="border-radius: 50%;max-height:30px;max-width:30px;" data-url="{% url 'authorprofile' post.author %}">
+                        </div>
+                        <div col-9 col-lg-10">
+                            <h4 class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</h4>
+                        </div>
+                        <div class="col-1 ml-auto" style="padding-right: 25px;">
+                            <span class="iconify" id="horizontal" data-icon="uil:ellipsis-h" data-inline="false" data-height="25px" type="button" data-toggle="modal" data-target="#menu_{{ post.id }}"></span>
+                            <span class="iconify" id="vertical" data-icon="uil:ellipsis-v" data-inline="false" data-height="25px" type="button" data-toggle="modal" data-target="#menu_{{ post.id }}"></span>
+                        </div>
+                    </div>
+                <!-- Post Body -->
+                    <div class="row">
+                        <div class="col-12" style="padding-left: 0;padding-right: 0;position: relative;">
+                            <img src="{{ post.img.url }}" alt="post" class="img-fluid dbc imagefit" name="{{ post.id }}">
+                            <i class="fas fa-heart fa-10x" id="icon_{{ post.id }}" style="display: none;"></i>
+                        </div>
+                    </div>
+                <!-- Post Footer -->
+                    <div class="row" style="padding-top: 10px;">
+                        <div class="col-2 col-sm-1">
+                            {% if pf in reaction.likes %}
+                            <i class="fas fa-heart fa-2x like" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
+                            {% else %}
+                            <i class="far fa-heart fa-2x like" id="{{ post.id }}" style="cursor: pointer;"></i>
+                            {% endif %}
+                        </div>
+                        <div class="col-2 col-sm-1">
+                            <i class="far fa-comment fa-flip-horizontal fa-2x comment" style="cursor: pointer;" data-toggle="modal" data-target="#cmt_{{post.id}}"></i>
+                        </div>
+                    </div>
+                    {% if reaction.likes|length > 0 %}
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-12">
+                            <h5 class="{{ post.id }}" type="button" data-toggle="modal" data-target="#lkmd_{{ post.id }}">{{ reaction.likes|length }} like{{ reaction.likes|pluralize }}</h5>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="row" style="display: none;margin-top: 10px;" id="containerl_{{ post.id }}">
+                        <div class="col-12">
+                            <h5 id="templ_{{ post.id }}" type="button" data-toggle="modal" data-target="#lkmd_{{ post.id }}">{{ reaction.likes|length }} like{{ reaction.likes|pluralize }}</h5>
+                        </div>
+                    </div>
+                    {% if post.caption %}
+                    <div class="row" style="margin-top: 10px;">
+                        <div col-12" style="padding-left: 15px;">
+                            <p><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> {{ post.caption }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if reaction.comments|length > 0 %}
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 style="color: grey;" id="nc_{{ post.id }}" class="nc" type="button" data-toggle="modal" data-target="#cmtmd_{{ post.id }}">{{ reaction.comments|length }} comment{{ reaction.comments|pluralize }}</h5>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="row" style="display: none;" id="containerc_{{ post.id }}">
+                        <div class="col-12">
+                            <h5 style="color: grey;" id="tempc_{{ post.id }}" class="nc" type="button" data-toggle="modal" data-target="#cmtmd_{{ post.id }}">{{ reaction.comments|length }} comment{{ reaction.comments|pluralize }}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-9" style="padding-left:15px;padding-top:10px;">
+                            <input type="text" id="id_{{ post.id }}" placeholder="Add a comment here..." class="commentemoji">
+                        </div>
+                        <div class="col-3" style="padding-top:13px;">
+                            <span class="comment" name="{{ post.id }}" type="button">Post</span>
+                        </div>
+                    </div><br>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-12">
+                        <h6 style="color:grey;">{{ post.post_date|timesince|split:"," }} ago</h6>
+                    </div>
+                </div>
+
+        <!-- Modals -->
+            <!-- Like Modal -->
+                <div class="modal fade" id="lkmd_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="lkmdLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="lkmd">Likes</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                {% for like in reaction.likes %}
+                                <div id="{{ post.id }}_{{ like.id }}">
+                                    <img src="{{ like.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' like.user %}">
+                                    <h4 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' like.user %}">{{ like.user }}</h4>
+                                    <h6 style="color: grey;padding-left:42px">{{ like.full_name }}</h6><hr>
+                                </div>
+                                {% endfor %}
+                                {% if pf not in reaction.likes %}
+                                <div style="display: none;" id="self_{{ post.id }}" name="self_{{ post.id }}">
+                                    <img src="{{ pf.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' pf.user %}">
+                                    <h4 class="profile" style="display: inline;padding-left:5px;" data-url="{% url 'authorprofile' pf.user %}">{{ pf.user }}</h4>
+                                    <h6 style="color: grey;padding-left:42px">{{ pf.full_name }}</h6><hr>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            <!-- View Comment Modal -->
+                <div class="modal fade" id="cmtmd_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="cmtmdLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="cmtmd">Comments</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body cmt_{{ post.id }}">
+                                {% for comment in reaction.comments %}
+                                <div>
+                                    <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
+                                    <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
+                                    <span>{{ comment.comments }}</span>
+                                    {% if comment.commentby.user == user %}
+                                        <i class="fas fa-trash-alt delcmt" type="button" data-url="{% url 'deletecomment' comment.id %}"></i>
+                                    {% endif %}
+                                    <hr>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Post Comment Modal-->
+                <div class="modal fade" id="cmt_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="cmtLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <p style="padding-top: 10px;"><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> {{ post.caption }}</p>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body cmt_{{ post.id }}">
+                                {% for comment in reaction.comments %}
+                                <div>
+                                    <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
+                                    <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
+                                    <span>{{ comment.comments }}</span>
+                                    {% if comment.commentby.user == user %}
+                                        <i class="fas fa-trash-alt delcmt" type="button" data-url="{% url 'deletecomment' comment.id %}"></i>
+                                    {% endif %}
+                                    <hr>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <div class="pc"><input type="text" placeholder="Add a comment here..." class="commentemoji id_{{ post.id }}"></div>
+                                <span class="commentmd" name="{{ post.id }}" type="button">Post</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Menu Modal-->
+                <div class="modal fade" id="menu_{{post.id}}" tabindex="-1" role="dialog" aria-labelledby="menu_{{ post.id }}Label" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body" style="cursor: pointer;display:grid;justify-content:center;">
+                                <div class="unfollow" style="justify-self: center;" type="button" data-url="{% url 'unfollow' post.author.id %}">Unfollow</div><div><hr style="border-color:grey;"></div>
+                                <div data-dismiss="modal" style="justify-self: center;">Cancel</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="blank">
+                <br><br>
+            </div>
+            {% endfor %}
+        {% else %}
+            <h1 id="noposts">
+                No posts to show !
+            </h1>
+        {% endif %}
+    </div>
+    
+<!-- Search Modal -->
+    <div class="modal fade" id="shmd" tabindex="-1" role="dialog" aria-labelledby="shmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shmd">Search</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="justify-content: space-between;">
+                    <form autocomplete="off" action="{% url 'search' %}" class="frm">
+                        <div class="input-group">
+                            <input type="search" class="form-control fas fa-search search" placeholder="&#xf002; Search" style="background-color: whitesmoke;" name="profile">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Post Modal -->
+    <div class="modal fade" id="postmd" tabindex="-1" role="dialog" aria-labelledby="postmdLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="postmd">Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+            <form action="{% url 'newpost' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                        <table class="table table-borderless">
+                            <tr><td>Image</td><td><input type="file" accept="image/*" name="mypost" required></td></tr>
+                            <tr><td>Caption</td><td><div class="txt"><textarea class="emoji" name="caption"></textarea></div></td></tr>
+                        </table>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script src = "{% static 'js/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery-ui/jquery-ui.js' %}"></script>
+    <script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/emojionearea.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        $(function(){
+            $('.like').click(function(){
+                var id = $(this).attr('id')
+                if($(this).css('color') != 'rgb(255, 0, 0)'){
+                    $.ajax({
+                        url: "{% url 'updatelikes' %}",
+                        data: {
+                            'post' : id,
+                            'action' : 'liked'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#'+id).css('color','rgb(255, 0, 0)').removeClass("far fa-heart").addClass("fas fa-heart")
+                            if(data.likes > 1){
+                                $('.'+id).show().text(data.likes+' likes')
+                            }else{
+                                $('#containerl_'+id).show()
+                                $('#templ_'+id).text(data.likes+' like')
+                            }
+                            if($('#self_'+id).attr('name') == 'self_'+id){
+                                $('#self_'+id).show()
+                            }else{
+                                $('#'+id+'_'+data.pf).show()
+                            }
+                        }
+                    })
+
+                }else{
+                    $.ajax({
+                        url: "{% url 'updatelikes' %}",
+                        data: {
+                            'post' : id,
+                            'action' : 'disliked'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#'+id).css('color','rgb(33, 37, 41)').removeClass("fas fa-heart").addClass("far fa-heart")
+                            if(data.likes == 0){
+                                $('.'+id).hide()
+                                $('#containerl_'+id).hide()
+                                
+                            }else if(data.likes == 1){
+                                $('.'+id).show().text(data.likes+' like')
+                            }else{
+                                $('.'+id).show().text(data.likes+' likes')
+                            }
+                            if($('#self_'+id).attr('name') == 'self_'+id){
+                                $('#self_'+id).hide()
+                            }else{
+                                $('#'+id+'_'+data.pf).hide()
+                            }
+                            
+                        }
+                    })
+                    
+                }
+            })
+            $('.dbc').dblclick(function(){
+                var id = $(this).attr('name')
+                if($('#'+id).css('color') != 'rgb(255, 0, 0)'){
+                    $.ajax({
+                        url: "{% url 'updatelikes' %}",
+                        data: {
+                            'post' : id,
+                            'action' : 'liked'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            $('#'+id).css('color','rgb(255, 0, 0)').removeClass("far fa-heart").addClass("fas fa-heart")
+                            if(data.likes > 1){
+                                $('.'+id).show().text(data.likes+' likes')
+                            }else{
+                                $('#containerl_'+id).show()
+                                $('#templ_'+id).text(data.likes+' like')
+                            }
+                            if($('#self_'+id).attr('name') == 'self_'+id){
+                                $('#self_'+id).show()
+                            }else{
+                                $('#'+id+'_'+data.pf).show()
+                            }
+                        }
+                    })
+                }
+            })
+            $('.comment').click(function(){
+                var id = $(this).attr('name')
+                var value = $('#id_'+id).val()
+                if($.trim(value) != ''){
+                    $.ajax({
+                        url: "{% url 'comments' %}",
+                        data: {
+                            'id' : id,
+                            'comment' : value
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            var url = "{% url 'deletecomment' comment=0 %}".replace(/0/,data.id)
+                            if(data.comments == 0){
+                                $('#nc_'+id).hide()
+                                $('#containerc_'+id).hide()
+                                
+                            }else if(data.comments == 1){
+                                $('#containerc_'+id).show()
+                                $('#tempc_'+id).text(data.comments+' comment')
+                                
+                            }else{
+                                $('#nc_'+id).show().text(data.comments+' comments')
+                                
+                            }
+                            $('#id_'+id).val('')
+                            $('#c_'+id).append("<div class='row'><div class='col-12' style='padding-left:20px;'><strong>{{ user }} </strong>"+value+"</div></div><br>")
+                            $('.cmt_'+id).prepend("<img src='{{ pf.dp.url }}' alt='Dp' class='img-fluid' style='cursor: pointer;max-width:25px;border-radius:50%;'><h5 style='padding-left:5px;display:inline;'>{{ pf.user }} </h5><span>"+value+"</span><i class='fas fa-trash-alt delcmt' type='button' data-url="+url+"></i><hr>")
+                        }
+                    })
+                }
+
+                
+            })
+            $('.commentmd').click(function(){
+                var id = $(this).attr('name')
+                var value = $('.id_'+id).val()
+                if($.trim(value) != ''){
+                    $.ajax({
+                        url: "{% url 'comments' %}",
+                        data: {
+                            'id' : id,
+                            'comment' : value
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            var url = "{% url 'deletecomment' comment=0 %}".replace(/0/,data.id)
+                            if(data.comments == 0){
+                                $('#nc_'+id).hide()
+                                $('#containerc_'+id).hide()
+                                
+                            }else if(data.comments == 1){
+                                $('#containerc_'+id).show()
+                                $('#tempc_'+id).text(data.comments+' comment')
+                                
+                            }else{
+                                $('#nc_'+id).show().text(data.comments+' comments')
+                                
+                            }
+                            $('.id_'+id).val('')
+                            $('#c_'+id).append("<div class='row'><div class='col-12' style='padding-left:20px;'><strong>{{ user }} </strong>"+value+"</div></div><br>")
+                            $('.cmt_'+id).prepend("<img src='{{ pf.dp.url }}' alt='Dp' class='img-fluid' style='cursor: pointer;max-width:25px;border-radius:50%;'><h5 style='padding-left:5px;display:inline;'>{{ pf.user }} </h5><span>"+value+"</span><i class='fas fa-trash-alt delcmt' type='button' data-url="+url+"></i><hr>")
+                        }
+                    })
+                }
+
+                
+            })
+            $('.unfollow').click(function(){
+                window.location = $(this).data('url')
+            })
+        })
+    </script>
+</body>
+</html>
