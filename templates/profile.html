@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>{{ pf.full_name }} (@{{ pf.user }})</title>
     
-    <link rel="icon" href="{% static 'images/instag.png' %}" type="image/png">
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.rawgit.com/mervick/emojionearea/master/dist/emojionearea.min.css">
     <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.css' %}">
@@ -82,7 +82,7 @@
     <nav class="navbar fixed-top mainnav" style="background-color: white;">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#" style="font-family:cursive;font-weight:bold;color:black;">Instag</a>
+                <a class="navbar-brand" href="#" style="font-family:cursive;font-weight:bold;color:black;">Socio Insta</a>
             </div>
             <form autocomplete="off" class="navbar-form navbar-left frm" action="{% url 'search' %}">
                 <div class="input-group">

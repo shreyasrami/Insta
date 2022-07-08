@@ -5,5 +5,5 @@ from .models import Post,Profile,Like,Comment
 
 admin.site.register((Comment,Like,Post,Profile))
 admin.site.site_header = 'My administration'
-admin.site.site_title = 'Instag'
+admin.site.site_title = 'Socio Insta'
 admin.site.index_title = 'Site admin panel'
