@@ -69,6 +69,7 @@ def search(request):
     us = User.objects.get(username=search)
     pf = Profile.objects.get(user=us)
     self = Profile.objects.get(user=request.user)
+    self_pf = Profile.objects.get(user=request.user)
     fs = Profile.objects.get(user=us).followed_by.all()
     fg = Profile.objects.get(user=us).follows.all()
     posts = Post.objects.filter(author=pf)
@@ -87,13 +88,14 @@ def search(request):
         else:
             btn = 'Follow'
         
-        
     context = {
+        'is_searched' : True, 
         'us' : us,
         'fs' : fs,
         'fg' : fg,
         'pf' : pf,
         'self' : self,
+        'self_pf' : self_pf,
         'posts' : posts,
         'btn' : btn,
         'di' : di
@@ -259,9 +261,8 @@ def dp(request):
     return redirect('profile')
 
 def suggestions(request):
-    users = User.objects.only('username')
+    users = User.objects.filter(is_superuser=False,is_staff=False).only('username')
     name = [user.username for user in users]
-    name.remove('shreyasrami')
     di = {'name' : name}
     return JsonResponse(di)
 

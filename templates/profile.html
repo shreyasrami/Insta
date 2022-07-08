@@ -370,7 +370,7 @@
         </div>
     </div>
 
-
+<!-- Body -->
     <div id="main" style="display: none;">
         <!-- Post -->
             {% for post,reaction in di.items %}
@@ -487,12 +487,22 @@
                                     <h6 style="color: grey;padding-left:42px">{{ like.full_name }}</h6><hr>
                                 </div>
                                 {% endfor %}
-                                {% if pf not in reaction.likes %}
-                                <div style="display: none;" id="self_{{ post.id }}" name="self_{{ post.id }}">
-                                    <img src="{{ pf.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' pf.user %}">
-                                    <h4 class="profile" style="display: inline;padding-left:5px;" data-url="{% url 'authorprofile' pf.user %}">{{ pf.user }}</h4>
-                                    <h6 style="color: grey;padding-left:42px">{{ pf.full_name }}</h6><hr>
-                                </div>
+                                {% if is_searched %}
+                                    {% if self_pf not in reaction.likes %}
+                                    <div style="display: none;" id="self_{{ post.id }}" name="self_{{ post.id }}">
+                                        <img src="{{ self_pf.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' self_pf.user %}">
+                                        <h4 class="profile" style="display: inline;padding-left:5px;" data-url="{% url 'authorprofile' self_pf.user %}">{{ self_pf.user }}</h4>
+                                        <h6 style="color: grey;padding-left:42px">{{ self_pf.full_name }}</h6><hr>
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    {% if pf not in reaction.likes %}
+                                    <div style="display: none;" id="self_{{ post.id }}" name="self_{{ post.id }}">
+                                        <img src="{{ pf.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' pf.user %}">
+                                        <h4 class="profile" style="display: inline;padding-left:5px;" data-url="{% url 'authorprofile' pf.user %}">{{ pf.user }}</h4>
+                                        <h6 style="color: grey;padding-left:42px">{{ pf.full_name }}</h6><hr>
+                                    </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>

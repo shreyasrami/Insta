@@ -8,6 +8,7 @@ class Profile(models.Model):
     dp = models.ImageField(upload_to='post_images',null=True,blank=True,default='post_images/dp.png') 
     follows = models.ManyToManyField('self',related_name='followed_by',symmetrical=False,blank=True)
     bio = models.CharField(default=None,max_length=50,null=True,blank=True)
+    
     def __str__(self): 
         return str(self.user)
 
