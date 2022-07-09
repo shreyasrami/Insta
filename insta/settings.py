@@ -78,23 +78,22 @@ WSGI_APPLICATION = 'insta.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE' : 'django.db.backends.postgresql',
-            'NAME' : config('DB_NAME'),
-            'USER' : config('DB_USER'),
-            'PASSWORD' : config('DB_PASSWORD'),
-            'HOST' : config('DB_HOST')
-        }
+# DATABASES = {
+#     'default': {
+#         'ENGINE' : 'django.db.backends.postgresql',
+#         'NAME' : config('DB_NAME'),
+#         'USER' : config('DB_USER'),
+#         'PASSWORD' : config('DB_PASSWORD'),
+#         'HOST' : config('DB_HOST')
+#     }
+# }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -142,14 +141,13 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-if DEBUG:
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': config('CLOUD_NAME', default=""),
-        'API_KEY': config('API_KEY', default=""),
-        'API_SECRET': config('API_SECRET', default=""),
-    }
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUD_NAME', default=""),
+    'API_KEY': config('API_KEY', default=""),
+    'API_SECRET': config('API_SECRET', default=""),
+}
 
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 EMAIL_BACKEND = config('EMAIL_BACKEND')
