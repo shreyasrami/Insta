@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from PIL import Image
 from io import BytesIO
 from django.core.files import File
+from cloudinary import CloudinaryImage, uploader
 # Create your views here.
 
 @login_required(login_url='/')
@@ -235,29 +236,41 @@ def newpost(request):
 
 def dp(request):
     user = Profile.objects.get(user=request.user)
-    img = Image.open(request.FILES['mydp'])
-    width = img.size[0]
-    height = img.size[1]
-    if width > height:
-        diff = width - height
-        off = diff/2
-        resize = (off,0,width-off,height)
-    elif height > width:
-        diff = height - width
-        off = diff/2
-        resize = (0,off,width,height-off)
-    else:
-        user.dp = request.FILES['mydp']
-        user.save()
-        img.close()
-        return redirect('profile')
-
-    final = img.crop(resize)
-    blob =  BytesIO()
-    final.save(blob,format='JPEG')
-    user.dp.save('dp.jpg',File(blob)) 
+    user.dp = request.FILES['mydp']
     user.save()
-    img.close()
+    
+    # user.dp = uploader.upload_resource(user.dp.url, transformation=[
+    #     {'gravity': "face", 'height': 400, 'width': 400, 'crop': "crop"},
+    #     {'radius': "max"},
+    #     {'width': 200, 'crop': "scale"}
+    # ])
+
+    # img = Image.open(request.FILES['mydp'])
+    # width = img.size[0]
+    # height = img.size[1]
+    # if width > height:
+    #     print("hi")
+    #     diff = width - height
+    #     off = diff/2
+    #     resize = (off,0,width-off,height)
+    # elif height > width:
+    #     print("hello")
+    #     diff = height - width
+    #     off = diff/2
+    #     resize = (0,off,width,height-off)
+    # else:
+    #     print("yo")
+    #     user.dp = request.FILES['mydp']
+    #     user.save()
+    #     img.close()
+    #     return redirect('profile')
+
+    # final = img.crop(resize)
+    # blob =  BytesIO()
+    # final.save(blob,format='JPEG')
+    # user.dp.save('dp.jpg',File(blob)) 
+    # user.save()
+    # img.close()
     return redirect('profile')
 
 def suggestions(request):
