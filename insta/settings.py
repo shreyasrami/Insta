@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG',cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['socio-insta.herokuapp.com']
 
 
 # Application definition
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -76,24 +78,23 @@ WSGI_APPLICATION = 'insta.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE' : 'django.db.backends.postgresql',
-#         'NAME' : config('DB_NAME'),
-#         'USER' : config('DB_USER'),
-#         'PASSWORD' : config('DB_PASSWORD'),
-#         'HOST' : config('DB_HOST')
-#     }
-# }
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE' : 'django.db.backends.postgresql',
+            'NAME' : config('DB_NAME'),
+            'USER' : config('DB_USER'),
+            'PASSWORD' : config('DB_PASSWORD'),
+            'HOST' : config('DB_HOST')
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -140,6 +141,15 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+if DEBUG:
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': config('CLOUD_NAME', default=""),
+        'API_KEY': config('API_KEY', default=""),
+        'API_SECRET': config('API_SECRET', default=""),
+    }
+
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 EMAIL_BACKEND = config('EMAIL_BACKEND')
