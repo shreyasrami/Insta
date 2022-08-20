@@ -1,4 +1,42 @@
 $(function(){
+    const toggleThemeBtn = document.querySelector('.header__theme-button');
+            
+    document.onload = setInitialTheme(localStorage.getItem('theme'));
+    function setInitialTheme(themeKey) {
+        if(themeKey === 'dark') {
+            document.documentElement.classList.add('darkTheme');
+            document.querySelectorAll('.inverted').forEach((result) => {
+                result.classList.toggle('invert');
+            })
+            $(".caption").css('color','rgb(255,255,255)');
+            $(".bio").css('color','rgb(255,255,255)');
+        }
+        else {
+            document.documentElement.classList.remove('darkTheme');
+        }
+        
+    }
+
+    toggleThemeBtn.addEventListener('click', () => {
+
+        document.documentElement.classList.toggle('darkTheme');
+
+        if(document.documentElement.classList.contains('darkTheme')) {
+            localStorage.setItem('theme', 'dark');
+            $(".caption").css('color','rgb(255,255,255)');
+            $(".bio").css('color','rgb(255,255,255)');
+        }
+        else {
+            localStorage.setItem('theme', 'light');
+            $(".caption").css('color','rgb(0,0,0)');
+            $(".bio").css('color','rgb(0,0,0)');
+        }
+
+        document.querySelectorAll('.inverted').forEach((result) => {
+            result.classList.toggle('invert');
+        });
+        
+    });
     
     $(document).on('click',".delcmt",function(){
         window.location.replace($(this).data('url'))
