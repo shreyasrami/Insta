@@ -51,6 +51,9 @@
             .pf{
                 padding-top: 20px;
             }
+            .nb{
+                font-size: 1em;
+            }
         }
         @media only screen and (max-width:575px){
             #user{
@@ -62,13 +65,24 @@
             }
             #myposts{
                 padding: 2px;
+            }    
+            .nb{
+                font-size: 1.5em;
             }
-            
         }
         @media only screen and (min-width:576px){
         
             #myposts{
                 padding:15px;
+            }
+            .nb{
+                font-size: 2em;
+            }
+            
+        }
+        @media only screen and (max-width:400px){
+            .nb{
+                font-size: 1em;
             }
             
         }
@@ -97,20 +111,20 @@
                     <input type="search" class="form-control fas fa-search search" placeholder="&#xf002; Search" style="background-color: whitesmoke;" name="profile" id="search" data-url="{% url 'suggestions' %}">
                 </div>
                 <div id="icon">
-                    <div type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search fa-2x nb"></i></div>
+                    <div type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search nb"></i></div>
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="cil:home" data-inline="false" data-height="35px"></span></a></li>
+                <li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="cil:home" data-inline="false"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false" data-height="40px"></span></div></li>
+                <li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false"></span></div></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-				<li><a href="http://{{ request.META.HTTP_HOST }}/instag/message"><i class="far fa-comment-alt fa-2x nb"></i></a></li>
+				<li><a href="http://{{ request.META.HTTP_HOST }}/instag/message"><i class="far fa-comment-alt nb"></i></a></li>
 			</ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'profile' %}"><i class="fas fa-user-circle fa-2x nb"></i></a></li>
+                <li><a href="{% url 'profile' %}"><i class="fas fa-user-circle nb"></i></a></li>
             </ul>
         </div>
     </nav>
@@ -354,7 +368,7 @@
                     <table class="table table-borderless">
                         <tr><td>Username</td><td><input type="text" name='username' value="{{ pf.user }}"></td></tr>
                         <tr><td>Name</td><td><input type="text" name='fullname' value="{{ pf.full_name }}"></td></tr>
-                        <tr><td>Bio</td><td><div class="txt"><textarea name='bio' class="emoji">{{ pf.bio }}</textarea></div></td></tr>
+                        <tr><td>Bio</td><td><div class="txt"><textarea name='bio' class="emoji inverted">{{ pf.bio }}</textarea></div></td></tr>
                     </table>
                 </div>
                 <div class="modal-footer">
@@ -458,7 +472,7 @@
                     {% if post.caption %}
                     <div class="row" style="margin-top: 10px;">
                         <div col-12" style="padding-left: 15px;">
-                            <p><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> {{ post.caption }}</p>
+                            <p><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong><span class="caption inverted"> {{ post.caption }}</span></p>
                         </div>
                     </div>
                     {% endif %}
@@ -476,7 +490,7 @@
                     </div>
                     <div class="row">
                         <div class="col-9" style="padding-left:15px;padding-top: 10px;">
-                            <input type="text" id="id_{{ post.id }}" placeholder="Add a comment here..." class="commentemoji">
+                            <input type="text" id="id_{{ post.id }}" placeholder="Add a comment here..." class="commentemoji inverted">
                         </div>
                         <div class="col-3" style="padding-top: 13px;">
                             <span class="comment" name="{{ post.id }}" type="button">Post</span>
@@ -580,7 +594,7 @@
                                 {% endfor %}
                             </div>
                             <div class="modal-footer">
-                                <div class="pc"><input type="text" placeholder="Add a comment here..." class="commentemoji id_{{ post.id }}"></div>
+                                <div class="pc"><input type="text" placeholder="Add a comment here..." class="commentemoji inverted id_{{ post.id }}"></div>
                                 <span class="commentmd" name="{{ post.id }}" type="button">Post</span>
                             </div>
                         </div>

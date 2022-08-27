@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 	<style>
+
 		body{margin-top:20px;}
 
 		.chat-online {
@@ -69,6 +70,29 @@
 		.border-top {
 			border-top: 1px solid #dee2e6!important;
 		}
+		@media only screen and (max-width:400px){
+			.nb{
+				font-size: 1em;
+			}
+		}
+		@media only screen and (max-width:575px){   
+			.nb{
+				font-size: 1.5em;
+			}
+		}
+		@media only screen and (min-width:576px){
+		
+			.nb{
+				font-size: 2em;
+			}
+			
+		}
+		@media only screen and (max-width:400px){
+			.nb{
+				font-size: 1em;
+			}
+			
+		}
 	</style>
 
 <body style="background-color: #eee;">
@@ -87,20 +111,20 @@
 					<input type="search" class="form-control fas fa-search search" placeholder="&#xf002; Search" style="background-color: whitesmoke;" name="profile" id="search" data-url="{% url 'suggestions' %}">
 				</div>
 				<div id="icon">
-					<a href="#" type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search fa-2x nb"></i></a>
+					<a href="#" type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search nb"></i></a>
 				</div>
 			</form>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="cil:home" data-inline="false" data-height="33px"></span></a></li>
+				<li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="cil:home" data-inline="false"></span></a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false" data-height="40px"></span></div></li>
+				<li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false"></span></div></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="{% url 'profile' %}"><i class="fas fa-comment-alt fa-2x nb"></i></a></li>
+				<li><a href="{% url 'profile' %}"><i class="fas fa-comment-alt nb"></i></a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="{% url 'profile' %}"><i class="far fa-user-circle fa-2x nb"></i></a></li>
+				<li><a href="{% url 'profile' %}"><i class="far fa-user-circle nb"></i></a></li>
 			</ul>
 		</div>
 	</nav>

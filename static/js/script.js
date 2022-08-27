@@ -10,6 +10,10 @@ $(function(){
             })
             $(".caption").css('color','rgb(255,255,255)');
             $(".bio").css('color','rgb(255,255,255)');
+            $(".commentemoji").css('background-color','rgb(0,0,0)');
+            $(".commentemoji").css('color','rgb(255,255,255)');
+            $(".emoji").css('background-color','rgb(0,0,0)');
+            $(".emoji").css('color','rgb(255,255,255)');
         }
         else {
             document.documentElement.classList.remove('darkTheme');
@@ -25,11 +29,19 @@ $(function(){
             localStorage.setItem('theme', 'dark');
             $(".caption").css('color','rgb(255,255,255)');
             $(".bio").css('color','rgb(255,255,255)');
+            $(".commentemoji").css('background-color','rgb(0,0,0)');
+            $(".commentemoji").css('color','rgb(255,255,255)');
+            $(".emoji").css('background-color','rgb(0,0,0)');
+            $(".emoji").css('color','rgb(255,255,255)');
         }
         else {
             localStorage.setItem('theme', 'light');
             $(".caption").css('color','rgb(0,0,0)');
             $(".bio").css('color','rgb(0,0,0)');
+            $(".commentemoji").css('background-color','rgb(255,255,255)');
+            $(".commentemoji").css('color','rgb(0,0,0)');
+            $(".emoji").css('background-color','rgb(255,255,255)');
+            $(".emoji").css('color','rgb(0,0,0)');
         }
 
         document.querySelectorAll('.inverted').forEach((result) => {
