@@ -72,10 +72,13 @@
                     <div class="form-group">
                         <input type="password" class="form-control c" id="Password2" name="Password2" placeholder="Confirm Password" required>
                     </div>
-
+                    <div style="position:relative">
+                    <div id="sub" style="position: absolute; left: 0px; right: 0px; bottom: 0px; top: 0px; z-index: 99999;"></div>
                     <button type="submit" class="btn btn-primary btn-block" id="rg" disabled>Register</button><br>
-                    
+                    </div>
                     <div class="alert {{message_class}}">{{message}}</div>
+                    <div class="alert alert-danger dsb">No field should be empty and password length should be greater than 6</div>
+
                   </form>
                   
   
@@ -96,6 +99,7 @@
     <script src="{% static 'js/script.js' %}"></script>
     <script>
         $(function(){
+            $('.dsb').hide()
             $('#rg').css('cursor','default')
             var f = $('#Full')
             var u = $('#Username')
@@ -103,18 +107,27 @@
             var p = $('#Password1')
             var cp = $('#Password2')
             
+            $('#sub').click(function(){
+                $('.dsb').show()
+            })
+
             $('.c').keyup(function(){
                 if($.trim(f.val()) != '' && $.trim(u.val()) != '' && $.trim(e.val()) != ''){
                     if($.trim(p.val()).length >= 6 && $.trim(cp.val()).length >= 6){
                         $('#rg').prop('disabled',false)
                         $('#rg').css('cursor','pointer')
+                        $('#sub').hide()
+                        $('.dsb').hide()
                     }else{
                         $('#rg').prop('disabled',true)
                         $('#rg').css('cursor','default')
+                        $('#sub').show()
+
                     }
                 }else{
                     $('#rg').prop('disabled',true)
                     $('#rg').css('cursor','default')
+                    $('#sub').show()
                 }
             })
         })

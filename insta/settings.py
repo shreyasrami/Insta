@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'insta.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(            
-        default='postgresql://postgres:postgres@localhost:5432/insta',        
+        default='postgres://insta_db_user:dicPGpGqiAoLFvwpx85jxtg1on95RmmF@dpg-ce8v0a9a6gdhr71ngp4g-a.singapore-postgres.render.com/insta_db',        
         conn_max_age=600   
     )}
 
@@ -144,7 +144,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)

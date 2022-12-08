@@ -199,18 +199,22 @@
                 <h6 class="pe">following</h6></div>
             </div>
         </div>
+        <br>
         <div class="row justify-content-center">
             {% if user == pf.user %}
             <div class="col-11 col-sm-7 col-md-6 col-lg-6" id="btn">
                 <button class="btn btn-block btn-info" id="btnf">{{btn}}</button>
             </div>
             {% else %}
-            <div class="col-5 col-sm-6 col-md-6 col-lg-6" id="btn">
+            
+            <div class="col-6 col-sm-4 col-md-4 col-lg-4" id="btn">
                 <button class="btn btn-block btn-info" id="btnf">{{btn}}</button>
             </div>
-            <div class="col-5 col-sm-6 col-md-6 col-lg-6" id="btn">
-                <button><a href="{% url 'conversation' pf.user  %}" class="btn btn-block btn-info">Message</a></button>
+            
+            <div class="col-6 col-sm-4 col-md-4 col-lg-4">
+                <a href="{% url 'conversation' pf.user  %}" class="btn btn-block btn-info" >Message</a>
             </div>
+            
             {% endif %}
         </div>
         
