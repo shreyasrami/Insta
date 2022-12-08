@@ -37,6 +37,11 @@
                 padding-right: 80px;
             }
         }
+        @media only screen and (min-width:992px){
+            .msgbtn{
+                padding-right: 80px;
+            }
+        }
         @media only screen and (min-width:400px){
             .pf{
                 padding-top: 40px;
@@ -45,6 +50,9 @@
         @media only screen and (max-width:400px){
             .pf{
                 padding-top: 20px;
+            }
+            .nb{
+                font-size: 1em;
             }
         }
         @media only screen and (max-width:575px){
@@ -57,13 +65,24 @@
             }
             #myposts{
                 padding: 2px;
+            }    
+            .nb{
+                font-size: 1.5em;
             }
-            
         }
         @media only screen and (min-width:576px){
         
             #myposts{
                 padding:15px;
+            }
+            .nb{
+                font-size: 2em;
+            }
+            
+        }
+        @media only screen and (max-width:400px){
+            .nb{
+                font-size: 1em;
             }
             
         }
@@ -71,9 +90,8 @@
         #dp{
             border: 1px solid black;
         }
-        
-        
 
+    
         
     </style>
 </head>
@@ -83,23 +101,30 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#" style="font-family:cursive;font-weight:bold;color:black;">Socio Insta</a>
+                <button class="header__theme-button" title="Toggle Theme">
+                    <i class="fas fa-sun header__theme-button-sun"></i>
+                    <i class="fas fa-moon header__theme-button-moon"></i>
+                </button>
             </div>
             <form autocomplete="off" class="navbar-form navbar-left frm" action="{% url 'search' %}">
                 <div class="input-group">
                     <input type="search" class="form-control fas fa-search search" placeholder="&#xf002; Search" style="background-color: whitesmoke;" name="profile" id="search" data-url="{% url 'suggestions' %}">
                 </div>
                 <div id="icon">
-                    <div type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search fa-2x nb"></i></div>
+                    <div type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search nb"></i></div>
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="cil:home" data-inline="false" data-height="35px"></span></a></li>
+                <li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="cil:home" data-inline="false"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false" data-height="40px"></span></div></li>
+                <li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false"></span></div></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'profile' %}"><i class="fas fa-user-circle fa-2x nb"></i></a></li>
+				<li><a href="http://{{ request.META.HTTP_HOST }}/instag/message"><i class="far fa-comment-alt nb"></i></a></li>
+			</ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'profile' %}"><i class="fas fa-user-circle nb"></i></a></li>
             </ul>
         </div>
     </nav>
@@ -123,14 +148,14 @@
                 <form action="{% url 'dp' %}" method="POST" id="dpform" enctype="multipart/form-data">
                     {% csrf_token %}
                     <label for="setdp">
-                        <img src="{{ pf.dp.url }}" alt="Dp" id="dp" class="img-fluid" style="cursor: pointer;border-radius:50%;">
+                        <img src="{{ pf.dp.url }}" alt="Dp" id="dp" class="img-fluid inverted" style="cursor: pointer;border-radius:50%;">
                     </label>
                     <input type="file" id="setdp" style="display: none;" name="mydp">
                 </form>
             </div>
             {% else %}
             <div class="col-4 col-md-3 col-lg-2">
-                <img src="{{ pf.dp.url }}" alt="Dp" id="dp" class="img-fluid" style="cursor: pointer;">
+                <img src="{{ pf.dp.url }}" alt="Dp" id="dp" class="img-fluid inverted" style="cursor: pointer;">
             </div>
             {% endif %}
             <div class="col-6 col-sm-4 col-md-3 col-xl-2 pf">
@@ -147,15 +172,16 @@
             {% endif %}
         </div>
         {% if pf.bio %}
+        <br>
         <div class="row justify-content-center">
             <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
-                <h4><p>{{ pf.bio|linebreaks }}</p></h4>
+                <h4><p class="bio inverted">{{ pf.bio }}</p></h4>
             </div>
         </div>
         {% else %}
         <div class="row justify-content-center" style="visibility: hidden;">
             <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
-                <h4><p>{{ pf.bio|linebreaks }}</p></h4>
+                <h4><p class="bio inverted">{{ pf.bio|linebreaks }}</p></h4>
             </div>
         </div>
         {% endif %}
@@ -174,9 +200,18 @@
             </div>
         </div>
         <div class="row justify-content-center">
+            {% if user == pf.user %}
             <div class="col-11 col-sm-7 col-md-6 col-lg-6" id="btn">
                 <button class="btn btn-block btn-info" id="btnf">{{btn}}</button>
             </div>
+            {% else %}
+            <div class="col-5 col-sm-6 col-md-6 col-lg-6" id="btn">
+                <button class="btn btn-block btn-info" id="btnf">{{btn}}</button>
+            </div>
+            <div class="col-5 col-sm-6 col-md-6 col-lg-6" id="btn">
+                <button><a href="{% url 'conversation' pf.user  %}" class="btn btn-block btn-info">Message</a></button>
+            </div>
+            {% endif %}
         </div>
         
         <br><br><br><br>
@@ -197,7 +232,7 @@
             <div class="row">
                 {% for post in posts %}
                 <div class="col-4 col-lg-3" id="myposts">
-                    <img src="{{ post.img.url }}" alt="post" name="{{ post.id }}" class="img-fluid fit viewpost" style="cursor: pointer;">
+                    <img src="{{ post.img.url }}" alt="post" name="{{ post.id }}" class="img-fluid fit viewpost inverted" style="cursor: pointer;">
                 </div>
                 {% endfor %}
             </div>
@@ -224,14 +259,14 @@
                 <div class="modal-body">
                     {% for follower in fs %}
                     <div id="{{ follower.id }}">
-                        <img src="{{ follower.dp.url }}" alt="Dp" class="img-fluid" style="cursor: pointer;max-width:25px;border-radius:50%;">
+                        <img src="{{ follower.dp.url }}" alt="Dp" class="img-fluid inverted" style="cursor: pointer;max-width:25px;border-radius:50%;">
                         <h4 style="display: inline;padding-left:5px;">{{ follower.user }}</h4>
                         <h6 style="color: grey;padding-left:42px">{{ follower.full_name }}</h6><hr>
                     </div>
                     {% endfor %}
                     {% if self not in fs %}
                     <div style="display: none;" id="self" name='self'>
-                        <img src="{{ self.dp.url }}" alt="Dp" class="img-fluid" style="cursor: pointer;max-width:30px;border-radius:50%;">
+                        <img src="{{ self.dp.url }}" alt="Dp" class="img-fluid inverted" style="cursor: pointer;max-width:30px;border-radius:50%;">
                         <h4 style="display: inline;padding-left:5px;">{{ self.user }}</h4>
                         <h6 style="color: grey;padding-left:42px">{{ self.full_name }}</h6><hr>
                     </div>
@@ -252,15 +287,15 @@
                 </div>
                 <div class="modal-body">
                     {% for following in fg %}
-                    <img src="{{ following.dp.url }}" alt="Dp" class="img-fluid" style="cursor: pointer;max-width:30px;border-radius:50%;">
+                    <img src="{{ following.dp.url }}" alt="Dp" class="img-fluid inverted" style="cursor: pointer;max-width:30px;border-radius:50%;">
                     <h4 style="display: inline;padding-left:5px;">{{ following.user }}</h4>
                     <h6 style="color: grey;padding-left:42px">{{ following.full_name }}</h6><hr>
                     {% endfor %}
-                    
                 </div>
             </div>
         </div>
     </div>
+    
 <!-- Search Modal -->
     <div class="modal fade" id="shmd" tabindex="-1" role="dialog" aria-labelledby="shmdLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -333,7 +368,7 @@
                     <table class="table table-borderless">
                         <tr><td>Username</td><td><input type="text" name='username' value="{{ pf.user }}"></td></tr>
                         <tr><td>Name</td><td><input type="text" name='fullname' value="{{ pf.full_name }}"></td></tr>
-                        <tr><td>Bio</td><td><div class="txt"><textarea name='bio' class="emoji">{{ pf.bio }}</textarea></div></td></tr>
+                        <tr><td>Bio</td><td><div class="txt"><textarea name='bio' class="emoji inverted">{{ pf.bio }}</textarea></div></td></tr>
                     </table>
                 </div>
                 <div class="modal-footer">
@@ -369,6 +404,7 @@
             </div>
         </div>
     </div>
+    
 
 <!-- Body -->
     <div id="main" style="display: none;">
@@ -379,7 +415,7 @@
                 <!-- Post Header -->
                     <div class="row">
                         <div class="col-2 col-lg-1">
-                            <img class="img-fluid profile" src="{{ post.author.dp.url }}" alt="Dp" style="border-radius: 50%;max-height:30px;max-width:30px;" data-url="{% url 'authorprofile' post.author %}">
+                            <img class="img-fluid profile inverted" src="{{ post.author.dp.url }}" alt="Dp" style="border-radius: 50%;max-height:30px;max-width:30px;" data-url="{% url 'authorprofile' post.author %}">
                         </div>
                         <div col-9 col-lg-10">
                             <h4 class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</h4>
@@ -394,7 +430,7 @@
                 <!-- Post Body -->
                     <div class="row">
                         <div class="col-12" style="padding-left:0;padding-right:0;">
-                            <img src="{{ post.img.url }}" alt="post" class="img-fluid dbc imagefit" name="{{ post.id }}" style="cursor: pointer;">
+                            <img src="{{ post.img.url }}" alt="post" class="img-fluid dbc imagefit inverted" name="{{ post.id }}" style="cursor: pointer;">
                             <i class="fas fa-heart fa-10x" id="icon_{{ post.id }}" style="display: none;"></i>
                         </div>
                     </div>
@@ -403,13 +439,13 @@
                         <div class="col-2 col-sm-1">
                             {% if user == us %}
                                 {% if pf in reaction.likes %}
-                                    <i class="fas fa-heart fa-2x like" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
+                                    <i class="fas fa-heart fa-2x like inverted" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
                                 {% else %}
                                     <i class="far fa-heart fa-2x like" id="{{ post.id }}" style="cursor: pointer;"></i>
                                 {% endif %}
                             {% else %}
                                 {% if self in reaction.likes %}
-                                    <i class="fas fa-heart fa-2x like" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
+                                    <i class="fas fa-heart fa-2x like inverted" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
                                 {% else %}
                                     <i class="far fa-heart fa-2x like" id="{{ post.id }}" style="cursor: pointer;"></i>
                                 {% endif %}
@@ -436,7 +472,7 @@
                     {% if post.caption %}
                     <div class="row" style="margin-top: 10px;">
                         <div col-12" style="padding-left: 15px;">
-                            <p><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> {{ post.caption }}</p>
+                            <p><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong><span class="caption inverted"> {{ post.caption }}</span></p>
                         </div>
                     </div>
                     {% endif %}
@@ -454,7 +490,7 @@
                     </div>
                     <div class="row">
                         <div class="col-9" style="padding-left:15px;padding-top: 10px;">
-                            <input type="text" id="id_{{ post.id }}" placeholder="Add a comment here..." class="commentemoji">
+                            <input type="text" id="id_{{ post.id }}" placeholder="Add a comment here..." class="commentemoji inverted">
                         </div>
                         <div class="col-3" style="padding-top: 13px;">
                             <span class="comment" name="{{ post.id }}" type="button">Post</span>
@@ -482,7 +518,7 @@
                             <div class="modal-body">
                                 {% for like in reaction.likes %}
                                 <div id="{{ post.id }}_{{ like.id }}">
-                                    <img src="{{ like.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' like.user %}">
+                                    <img src="{{ like.dp.url }}" alt="Dp" class="img-fluid profile inverted" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' like.user %}">
                                     <h4 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' like.user %}">{{ like.user }}</h4>
                                     <h6 style="color: grey;padding-left:42px">{{ like.full_name }}</h6><hr>
                                 </div>
@@ -490,7 +526,7 @@
                                 {% if is_searched %}
                                     {% if self_pf not in reaction.likes %}
                                     <div style="display: none;" id="self_{{ post.id }}" name="self_{{ post.id }}">
-                                        <img src="{{ self_pf.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' self_pf.user %}">
+                                        <img src="{{ self_pf.dp.url }}" alt="Dp" class="img-fluid profile inverted" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' self_pf.user %}">
                                         <h4 class="profile" style="display: inline;padding-left:5px;" data-url="{% url 'authorprofile' self_pf.user %}">{{ self_pf.user }}</h4>
                                         <h6 style="color: grey;padding-left:42px">{{ self_pf.full_name }}</h6><hr>
                                     </div>
@@ -498,7 +534,7 @@
                                 {% else %}
                                     {% if pf not in reaction.likes %}
                                     <div style="display: none;" id="self_{{ post.id }}" name="self_{{ post.id }}">
-                                        <img src="{{ pf.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' pf.user %}">
+                                        <img src="{{ pf.dp.url }}" alt="Dp" class="img-fluid profile inverted" style="cursor: pointer;max-width:30px;border-radius:50%;" data-url="{% url 'authorprofile' pf.user %}">
                                         <h4 class="profile" style="display: inline;padding-left:5px;" data-url="{% url 'authorprofile' pf.user %}">{{ pf.user }}</h4>
                                         <h6 style="color: grey;padding-left:42px">{{ pf.full_name }}</h6><hr>
                                     </div>
@@ -521,7 +557,7 @@
                             <div class="modal-body cmt_{{ post.id }}">
                                 {% for comment in reaction.comments %}
                                 <div>
-                                    <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
+                                    <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile inverted" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
                                     <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
                                     <span>{{ comment.comments }}</span>
                                     {% if comment.commentby.user == user %}
@@ -547,7 +583,7 @@
                             <div class="modal-body cmt_{{ post.id }}">
                                 {% for comment in reaction.comments %}
                                 <div>
-                                    <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
+                                    <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile inverted" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
                                     <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
                                     <span>{{ comment.comments }}</span>
                                     {% if comment.commentby.user == user %}
@@ -558,7 +594,7 @@
                                 {% endfor %}
                             </div>
                             <div class="modal-footer">
-                                <div class="pc"><input type="text" placeholder="Add a comment here..." class="commentemoji id_{{ post.id }}"></div>
+                                <div class="pc"><input type="text" placeholder="Add a comment here..." class="commentemoji inverted id_{{ post.id }}"></div>
                                 <span class="commentmd" name="{{ post.id }}" type="button">Post</span>
                             </div>
                         </div>

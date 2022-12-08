@@ -22,6 +22,37 @@
     
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+    <style>
+        .srh {
+            border: 1px solid white;
+        }
+        @media only screen and (max-width:400px){
+            .nb{
+                font-size: 1em;
+            }
+        }
+        @media only screen and (max-width:575px){   
+            .nb{
+                font-size: 1.5em;
+            }
+        }
+        @media only screen and (min-width:576px){
+        
+            .nb{
+                font-size: 2em;
+            }
+            
+        }
+        @media only screen and (max-width:400px){
+            .nb{
+                font-size: 1em;
+            }
+            
+        }
+        
+        
+    </style>
+
 </head>
 <body style="background-color: #eee;">
 <!-- Navbar -->
@@ -29,23 +60,30 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#" style="font-family:cursive;font-weight:bold;color:black;">Socio Insta</a>
+                <button class="header__theme-button" title="Toggle Theme">
+                    <i class="fas fa-sun header__theme-button-sun"></i>
+                    <i class="fas fa-moon header__theme-button-moon"></i>
+                </button>
             </div>
             <form autocomplete="off" class="navbar-form navbar-left frm" action="{% url 'search' %}">
                 <div class="input-group">
                     <input type="search" class="form-control fas fa-search search" placeholder="&#xf002; Search" style="background-color: whitesmoke;" name="profile" id="search" data-url="{% url 'suggestions' %}">
                 </div>
                 <div id="icon">
-                    <a href="#" type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search fa-2x nb"></i></a>
+                    <a href="#" type="button" data-toggle="modal" data-target="#shmd"><i class="fas fa-search nb"></i></a>
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="el:home" data-inline="false" data-height="33px"></span></a></li>
+                <li><a href="{% url 'index' %}"><span class="iconify nb" data-icon="el:home" data-inline="false"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false" data-height="40px"></span></div></li>
+                <li><div type="button" data-toggle="modal" data-target="#postmd"><span class="iconify nb" data-icon="bi:file-plus" data-inline="false"></span></div></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'profile' %}"><i class="far fa-user-circle fa-2x nb"></i></a></li>
+				<li><a href="message"><i class="far fa-comment-alt nb"></i></a></li>
+			</ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'profile' %}"><i class="far fa-user-circle nb"></i></a></li>
             </ul>
         </div>
     </nav>
@@ -73,7 +111,7 @@
                 <!-- Post Body -->
                     <div class="row">
                         <div class="col-12" style="padding-left: 0;padding-right: 0;position: relative;">
-                            <img src="{{ post.img.url }}" alt="post" class="img-fluid dbc imagefit" name="{{ post.id }}">
+                            <img src="{{ post.img.url }}" alt="post" class="img-fluid dbc imagefit inverted" name="{{ post.id }}">
                             <i class="fas fa-heart fa-10x" id="icon_{{ post.id }}" style="display: none;"></i>
                         </div>
                     </div>
@@ -81,7 +119,7 @@
                     <div class="row" style="padding-top: 10px;">
                         <div class="col-2 col-sm-1">
                             {% if pf in reaction.likes %}
-                            <i class="fas fa-heart fa-2x like" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
+                            <i class="fas fa-heart fa-2x like inverted" id="{{ post.id }}" style="color: red;cursor: pointer"></i>
                             {% else %}
                             <i class="far fa-heart fa-2x like" id="{{ post.id }}" style="cursor: pointer;"></i>
                             {% endif %}
@@ -104,8 +142,8 @@
                     </div>
                     {% if post.caption %}
                     <div class="row" style="margin-top: 10px;">
-                        <div col-12" style="padding-left: 15px;">
-                            <p><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> {{ post.caption }}</p>
+                        <div class="col-12" style="padding-left: 15px;">
+                            <p><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong><span class="caption inverted"> {{ post.caption }}</span></p>
                         </div>
                     </div>
                     {% endif %}
@@ -123,7 +161,7 @@
                     </div>
                     <div class="row">
                         <div class="col-9" style="padding-left:15px;padding-top:10px;">
-                            <input type="text" id="id_{{ post.id }}" placeholder="Add a comment here..." class="commentemoji">
+                            <input type="text" id="id_{{ post.id }}" placeholder="Add a comment here..." class="commentemoji inverted">
                         </div>
                         <div class="col-3" style="padding-top:13px;">
                             <span class="comment" name="{{ post.id }}" type="button">Post</span>
@@ -218,7 +256,7 @@
                                 {% endfor %}
                             </div>
                             <div class="modal-footer">
-                                <div class="pc"><input type="text" placeholder="Add a comment here..." class="commentemoji id_{{ post.id }}"></div>
+                                <div class="pc"><input type="text" placeholder="Add a comment here..." class="commentemoji inverted id_{{ post.id }}"></div>
                                 <span class="commentmd" name="{{ post.id }}" type="button">Post</span>
                             </div>
                         </div>
@@ -299,6 +337,7 @@
     <script src="{% static 'js/script.js' %}"></script>
     <script>
         $(function(){
+        
             $('.like').click(function(){
                 var id = $(this).attr('id')
                 if($(this).css('color') != 'rgb(255, 0, 0)'){
@@ -310,7 +349,7 @@
                         },
                         dataType: 'json',
                         success: function(data){
-                            $('#'+id).css('color','rgb(255, 0, 0)').removeClass("far fa-heart").addClass("fas fa-heart")
+                            $('#'+id).css('color','rgb(255, 0, 0)').removeClass("far fa-heart").addClass("fas fa-heart").toggleClass("inverted");
                             if(data.likes > 1){
                                 $('.'+id).show().text(data.likes+' likes')
                             }else{
@@ -334,7 +373,7 @@
                         },
                         dataType: 'json',
                         success: function(data){
-                            $('#'+id).css('color','rgb(33, 37, 41)').removeClass("fas fa-heart").addClass("far fa-heart")
+                            $('#'+id).css('color','rgb(33, 37, 41)').removeClass("fas fa-heart").addClass("far fa-heart").toggleClass("inverted");
                             if(data.likes == 0){
                                 $('.'+id).hide()
                                 $('#containerl_'+id).hide()

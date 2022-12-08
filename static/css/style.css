@@ -132,3 +132,29 @@
     display: grid;
     justify-content: right;
 }
+
+
+.header__theme-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.header__theme-button-sun {
+    display: none;
+}
+.header__theme-button-moon {
+    display: unset;
+}
+:root.darkTheme .header__theme-button-sun {
+    display: unset;
+}
+:root.darkTheme .header__theme-button-moon {
+    display: none;
+}
+
+.darkTheme {
+    filter: invert(1) hue-rotate(180deg);
+}
+.invert {
+    filter: invert(1) hue-rotate(180deg);
+}
