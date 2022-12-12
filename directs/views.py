@@ -94,6 +94,10 @@ def NewConversation(request, username):
         to_user = User.objects.get(username=username)
     except Exception as e:
         return redirect('search-users')
+
+    if Message.objects.filter(sender=from_user,reciepient=to_user).exists():
+        return redirect('directs',username=username)
+
     if from_user != to_user:
         Message.sender_message(from_user, to_user, body)
     return redirect('message')

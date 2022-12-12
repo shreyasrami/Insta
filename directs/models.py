@@ -13,6 +13,7 @@ class Message(models.Model):
     body = models.TextField(null=True)
     date = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+    
 
     def sender_message(from_user, to_user, body):
         sender_message = Message(
@@ -44,3 +45,7 @@ class Message(models.Model):
                 'unread': Message.objects.filter(user=user, reciepient__pk=message['reciepient'], is_read=False).count()
             })
         return users
+
+
+    def __str__(self): 
+        return str(self.sender) + "_" + str(self.reciepient) + "_" + str(self.body)

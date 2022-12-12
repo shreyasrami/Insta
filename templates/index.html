@@ -100,7 +100,7 @@
                 <!-- Post Header -->
                     <div class="row">
                         <div class="col-2 col-lg-1">
-                            <img class="img-fluid profile" src="{{ post.author.dp.url }}" alt="Dp" style="border-radius: 50%;max-height:30px;max-width:30px;" data-url="{% url 'authorprofile' post.author %}">
+                            <img class="img-fluid profile inverted" src="{{ post.author.dp.url }}" alt="Dp" style="border-radius: 50%;max-height:30px;max-width:30px;" data-url="{% url 'authorprofile' post.author %}">
                         </div>
                         <div col-9 col-lg-10">
                             <h4 class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</h4>
@@ -223,7 +223,7 @@
                                 <div>
                                     <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
                                     <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
-                                    <span>{{ comment.comments }}</span>
+                                    <span class="bio inverted">{{ comment.comments }}</span>
                                     {% if comment.commentby.user == user %}
                                         <i class="fas fa-trash-alt delcmt" type="button" data-url="{% url 'deletecomment' comment.id %}"></i>
                                     {% endif %}
@@ -239,7 +239,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                            <p style="padding-top: 10px;"><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> {{ post.caption }}</p>
+                            <p style="padding-top: 10px;"><strong class="profile" data-url="{% url 'authorprofile' post.author %}">{{ post.author }}</strong> <span class="inverted"> {{ post.caption }} </span> </p>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -249,7 +249,7 @@
                                 <div>
                                     <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
                                     <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
-                                    <span>{{ comment.comments }}</span>
+                                    <span class="bio inverted">{{ comment.comments }}</span>
                                     {% if comment.commentby.user == user %}
                                         <i class="fas fa-trash-alt delcmt" type="button" data-url="{% url 'deletecomment' comment.id %}"></i>
                                     {% endif %}

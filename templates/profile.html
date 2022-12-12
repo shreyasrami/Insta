@@ -563,7 +563,7 @@
                                 <div>
                                     <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile inverted" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
                                     <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
-                                    <span>{{ comment.comments }}</span>
+                                    <span class="bio inverted">{{ comment.comments }}</span>
                                     {% if comment.commentby.user == user %}
                                         <i class="fas fa-trash-alt delcmt" type="button" data-url="{% url 'deletecomment' comment.id %}"></i>
                                     {% endif %}
@@ -589,7 +589,7 @@
                                 <div>
                                     <img src="{{ comment.commentby.dp.url }}" alt="Dp" class="img-fluid profile inverted" style="cursor: pointer;max-width:25px;border-radius:50%;" data-url="{% url 'authorprofile' comment.commentby.user %}">
                                     <h5 class="profile" style="padding-left:5px;display:inline;" data-url="{% url 'authorprofile' comment.commentby.user %}">{{ comment.commentby.user }}</h5>
-                                    <span>{{ comment.comments }}</span>
+                                    <span class="bio inverted">{{ comment.comments }}</span>
                                     {% if comment.commentby.user == user %}
                                         <i class="fas fa-trash-alt delcmt" type="button" data-url="{% url 'deletecomment' comment.id %}"></i>
                                     {% endif %}
